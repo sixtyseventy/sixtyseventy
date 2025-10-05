@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="siteTitle">Sixty Seventy</title>
+  <link id="siteFavicon" rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png">
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -25,7 +26,6 @@
     .light-theme #emergency, .light-theme #themeToggle, .light-theme #settingsBtn { border-color: #000; color: #000; }
     .light-theme #emergency:hover, .light-theme #themeToggle:hover, .light-theme #settingsBtn:hover { background: #000; color: #fff; }
     .light-theme .hover-text { background: rgba(255, 255, 255, 0.9); color: #000; }
-    .light-theme .logo { filter: grayscale(100%) invert(100%); }
     .gameButton {
       position: relative;
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -95,13 +95,6 @@
       100% { transform: scale(1); }
     }
     .pulse { animation: pulse 2.2s infinite; }
-    .logo {
-      filter: grayscale(100%);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .logo:hover {
-      transform: scale(1.1);
-    }
     .settings-input, .settings-select {
       background: #1a1a1a;
       color: #fff;
@@ -177,17 +170,17 @@
         <input type="text" id="customTitle" class="settings-input" placeholder="Enter site title" aria-label="Custom site title">
       </div>
       <div class="mb-4">
-        <label for="logoSelect" class="block text-gray-300 mb-2">choose logo</label>
-        <select id="logoSelect" class="settings-select" aria-label="Select logo">
+        <label for="faviconSelect" class="block text-gray-300 mb-2">choose favicon</label>
+        <select id="faviconSelect" class="settings-select" aria-label="Select favicon">
           <option value="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png">Google Classroom</option>
           <option value="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Roblox_Logo.svg/512px-Roblox_Logo.svg.png">Roblox</option>
-          <option value="https://via.placeholder.com/150">Placeholder 1</option>
-          <option value="https://via.placeholder.com/150/000000/FFFFFF">Placeholder 2</option>
+          <option value="https://via.placeholder.com/32">Placeholder 1</option>
+          <option value="https://via.placeholder.com/32/000000/FFFFFF">Placeholder 2</option>
         </select>
       </div>
       <div class="mb-6">
-        <label for="customLogo" class="block text-gray-300 mb-2">custom logo url</label>
-        <input type="text" id="customLogo" class="settings-input" placeholder="Enter logo URL" aria-label="Custom logo URL">
+        <label for="customFavicon" class="block text-gray-300 mb-2">custom favicon url</label>
+        <input type="text" id="customFavicon" class="settings-input" placeholder="Enter favicon URL" aria-label="Custom favicon URL">
       </div>
       <div class="flex justify-center gap-4">
         <button id="settingsSave" class="bg-transparent border border-white text-white px-4 py-2 rounded-lg hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-white">save</button>
@@ -207,13 +200,13 @@
       {
         name: "2048",
         file: "2048.html",
-        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRq02JDBGHLC6nB-2QLfI92VxJZS2ElKUb4yVnuPn6GA4xOb9yN0-K2MSBG5Et1S1LPjoQ&usqp=CAU",
-        description: "2048 is a simple puzzle game where you slide numbered tiles on a 4x4 grid. The goal is to combine tiles with the same numbers to create a tile with the number 2048. You move tiles up, down, left, or right, and when two tiles with the same number touch, they merge into one tile with double the value!"
+        img: "https://play-lh.googleusercontent.com/5JrXBphEEsLGqTbdEUKzmfjT2QWuQOI_CwU7r6G53SBNRrSRj1VFL4CY6Ue19z9irYQr",
+        description: "2048 is a simple puzzle game where you slide numbered tiles on a 4x4 grid. The goal is to combine tiles with the same numbers to create a tile with the number 2048. You move tiles up, down, left, or right, and when two tiles with the same number touch, they merge into one tile with double the value"
       },
     ];
 
     const tips = [
-      "how can i be homophobic, my boyfriend is gay.",
+      "sixty seventy!",
     ];
 
     const loadingScreen = document.getElementById("loadingScreen");
@@ -231,13 +224,13 @@
     const settingsModal = document.getElementById("settingsModal");
     const settingsModalContent = document.querySelector(".settings-modal-content");
     const customTitle = document.getElementById("customTitle");
-    const logoSelect = document.getElementById("logoSelect");
-    const customLogo = document.getElementById("customLogo");
+    const faviconSelect = document.getElementById("faviconSelect");
+    const customFavicon = document.getElementById("customFavicon");
     const settingsSave = document.getElementById("settingsSave");
     const settingsCancel = document.getElementById("settingsCancel");
     const siteTitle = document.getElementById("siteTitle");
     const siteTitleDisplay = document.getElementById("siteTitleDisplay");
-    const siteLogo = document.getElementById("siteLogo");
+    const siteFavicon = document.getElementById("siteFavicon");
 
     let percent = 0;
     const updateLoading = () => {
@@ -296,13 +289,13 @@
 
     const loadSettings = () => {
       const savedTitle = localStorage.getItem("siteTitle");
-      const savedLogo = localStorage.getItem("siteLogo");
+      const savedFavicon = localStorage.getItem("siteFavicon");
       if (savedTitle) {
         siteTitle.textContent = savedTitle;
         siteTitleDisplay.textContent = savedTitle;
       }
-      if (savedLogo) {
-        siteLogo.src = savedLogo;
+      if (savedFavicon) {
+        siteFavicon.href = savedFavicon;
       }
     };
     loadSettings();
@@ -342,22 +335,30 @@
 
     settingsBtn.addEventListener("click", () => {
       customTitle.value = siteTitle.textContent;
-      customLogo.value = "";
+      customFavicon.value = "";
       settingsModal.classList.remove("hidden");
       setTimeout(() => settingsModalContent.classList.add("active"), 10);
     });
 
     settingsSave.addEventListener("click", () => {
       const newTitle = customTitle.value.trim();
-      const newLogo = customLogo.value.trim() || logoSelect.value;
+      const newFavicon = customFavicon.value.trim() || faviconSelect.value;
       if (newTitle) {
         siteTitle.textContent = newTitle;
         siteTitleDisplay.textContent = newTitle;
         localStorage.setItem("siteTitle", newTitle);
       }
-      if (newLogo) {
-        siteLogo.src = newLogo;
-        localStorage.setItem("siteLogo", newLogo);
+      if (newFavicon) {
+        const img = new Image();
+        img.onload = () => {
+          siteFavicon.href = newFavicon;
+          localStorage.setItem("siteFavicon", newFavicon);
+        };
+        img.onerror = () => {
+          siteFavicon.href = "https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png";
+          localStorage.setItem("siteFavicon", siteFavicon.href);
+        };
+        img.src = newFavicon;
       }
       settingsModalContent.classList.remove("active");
       setTimeout(() => settingsModal.classList.add("hidden"), 400);
