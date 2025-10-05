@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sixty Seventy</title>
+  <title id="siteTitle">Sixty Seventy</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
@@ -22,9 +22,10 @@
     }
     .light-theme .label, .light-theme p { color: #333; }
     .light-theme .gameButton { background: #ddd; }
-    .light-theme #emergency, .light-theme #themeToggle { border-color: #000; color: #000; }
-    .light-theme #emergency:hover, .light-theme #themeToggle:hover { background: #000; color: #fff; }
+    .light-theme #emergency, .light-theme #themeToggle, .light-theme #settingsBtn { border-color: #000; color: #000; }
+    .light-theme #emergency:hover, .light-theme #themeToggle:hover, .light-theme #settingsBtn:hover { background: #000; color: #fff; }
     .light-theme .hover-text { background: rgba(255, 255, 255, 0.9); color: #000; }
+    .light-theme .logo { filter: grayscale(100%) invert(100%); }
     .gameButton {
       position: relative;
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -43,16 +44,20 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.9);
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
-      font-weight: bold;
+      font-size: 0.85rem;
+      font-weight: normal;
+      line-height: 1.5;
+      padding: 12px;
+      text-align: center;
       opacity: 0;
       transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       pointer-events: none;
+      overflow: hidden;
     }
     .gameButton:hover .hover-text {
       opacity: 1;
@@ -73,23 +78,43 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    .modal {
+    .modal, .settings-modal {
       background: rgba(0, 0, 0, 0.9);
       backdrop-filter: blur(8px);
     }
-    .modal-content {
+    .modal-content, .settings-modal-content {
       transform: scale(0.85);
       transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .modal-content.active {
+    .modal-content.active, .settings-modal-content.active {
       transform: scale(1);
     }
     @keyframes pulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.08); }
       100% { transform: scale(1); }
-    }a
+    }
     .pulse { animation: pulse 2.2s infinite; }
+    .logo {
+      filter: grayscale(100%);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .logo:hover {
+      transform: scale(1.1);
+    }
+    .settings-input, .settings-select {
+      background: #1a1a1a;
+      color: #fff;
+      border: 1px solid #666;
+      padding: 8px;
+      border-radius: 4px;
+      width: 100%;
+    }
+    .light-theme .settings-input, .light-theme .settings-select {
+      background: #f0f0f0;
+      color: #000;
+      border: 1px solid #333;
+    }
     ::-webkit-scrollbar {
       width: 8px;
     }
@@ -114,11 +139,16 @@
 
   <button id="emergency" class="fixed top-4 left-4 bg-transparent border border-white text-white px-4 py-2 rounded-lg font-bold hover:bg-white hover:text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white z-50" aria-label="Emergency Button">emergency</button>
 
-  <button id="themeToggle" class="fixed top-4 right-4 bg-transparent border border-white text-white px-4 py-2 rounded-lg font-bold hover:bg-white hover:text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white z-50" aria-label="Toggle Theme">☀️/🌙</button>
+  <button id="themeToggle" class="fixed top-4 right-12 bg-transparent border border-white text-white px-4 py-2 rounded-lg font-bold hover:bg-white hover:text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white z-50" aria-label="Toggle Theme">☀️/🌙</button>
+
+  <button id="settingsBtn" class="fixed top-4 right-4 bg-transparent border border-white text-white px-4 py-2 rounded-lg font-bold hover:bg-white hover:text-black transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white z-50" aria-label="Settings">⚙️</button>
 
   <div class="container mx-auto px-6 py-24">
-    <h1 class="text-6xl font-bold text-center mt-12 mb-8 pulse">sixty seventy</h1>
-    <p class="text-lg text-gray-400 text-center mb-12">we're still working on this to provide more games.</p>
+    <div class="flex justify-center items-center mb-8">
+      <img id="siteLogo" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png" alt="Sixty Seventy Logo" class="logo w-12 h-12 sm:w-16 sm:h-16 mr-4">
+      <h1 id="siteTitleDisplay" class="text-6xl font-bold text-center pulse">sixty seventy</h1>
+    </div>
+    <p class="text-lg text-gray-400 text-center mb-12">minimalist games, maximum fun.</p>
 
     <div id="buttonContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 pb-24">
     </div>
@@ -134,24 +164,57 @@
       </div>
       <label class="flex items-center justify-center gap-2 text-gray-300 text-sm">
         <input type="checkbox" id="alwaysYes" class="h-4 w-4 text-white border-gray-300 focus:ring-white" aria-label="Always launch Clever automatically">
-        <span>always yes</span>
+        <span>always yes (will save option)</span>
       </label>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="fixed inset-0 hidden settings-modal flex items-center justify-center z-50">
+    <div class="settings-modal-content bg-black p-10 rounded-xl shadow-2xl max-w-md w-full text-center">
+      <h2 class="text-3xl font-bold mb-4">settings</h2>
+      <div class="mb-4">
+        <label for="customTitle" class="block text-gray-300 mb-2">site title</label>
+        <input type="text" id="customTitle" class="settings-input" placeholder="Enter site title" aria-label="Custom site title">
+      </div>
+      <div class="mb-4">
+        <label for="logoSelect" class="block text-gray-300 mb-2">choose logo</label>
+        <select id="logoSelect" class="settings-select" aria-label="Select logo">
+          <option value="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png">Google Classroom</option>
+          <option value="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Roblox_Logo.svg/512px-Roblox_Logo.svg.png">Roblox</option>
+          <option value="https://via.placeholder.com/150">Placeholder 1</option>
+          <option value="https://via.placeholder.com/150/000000/FFFFFF">Placeholder 2</option>
+        </select>
+      </div>
+      <div class="mb-6">
+        <label for="customLogo" class="block text-gray-300 mb-2">custom logo url</label>
+        <input type="text" id="customLogo" class="settings-input" placeholder="Enter logo URL" aria-label="Custom logo URL">
+      </div>
+      <div class="flex justify-center gap-4">
+        <button id="settingsSave" class="bg-transparent border border-white text-white px-4 py-2 rounded-lg hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-white">save</button>
+        <button id="settingsCancel" class="bg-transparent border border-white text-white px-4 py-2 rounded-lg hover:bg-white hover:text-black focus:outline-none focus:ring-2 focus:ring-white">cancel</button>
+      </div>
     </div>
   </div>
 
   <script>
     const games = [
-      { name: "paper.io", file: "paperio.html", img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzMHrFL5NXGpV_GyYaRRZ7FO0wduuffQ20WKE8aZ2JlGDCwAKpEjjEuntZMcmF0y-25rI&usqp=CAU" },
+      {
+        name: "paper.io",
+        file: "paperio.html",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzMHrFL5NXGpV_GyYaRRZ7FO0wduuffQ20WKE8aZ2JlGDCwAKpEjjEuntZMcmF0y-25rI&usqp=CAU",
+        description: "paper.io is a simple online game where you control a colored square to claim territory by drawing lines. connect your line back to your area to capture space, but if another player hits your line while drawing, you lose. goal: cover as much of the map as possible."
+      },
+      {
+        name: "2048",
+        file: "2048.html",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRq02JDBGHLC6nB-2QLfI92VxJZS2ElKUb4yVnuPn6GA4xOb9yN0-K2MSBG5Et1S1LPjoQ&usqp=CAU",
+        description: "2048 is a simple puzzle game where you slide numbered tiles on a 4x4 grid. The goal is to combine tiles with the same numbers to create a tile with the number 2048. You move tiles up, down, left, or right, and when two tiles with the same number touch, they merge into one tile with double the value!"
+      },
     ];
 
-const tips = [
-      "teacher he has a pew pew.",
-      "drink water.",
-      "doi doi doi.",
-      "okay labubu",
-      "check us out on discord."
+    const tips = [
+      "how can i be homophobic, my boyfriend is gay.",
     ];
-
 
     const loadingScreen = document.getElementById("loadingScreen");
     const percentText = document.getElementById("percent");
@@ -159,11 +222,22 @@ const tips = [
     const buttonContainer = document.getElementById("buttonContainer");
     const emergencyBtn = document.getElementById("emergency");
     const themeToggle = document.getElementById("themeToggle");
+    const settingsBtn = document.getElementById("settingsBtn");
     const modal = document.getElementById("emergencyModal");
     const modalContent = document.querySelector(".modal-content");
     const modalConfirm = document.getElementById("modalConfirm");
     const modalCancel = document.getElementById("modalCancel");
     const alwaysYesCheckbox = document.getElementById("alwaysYes");
+    const settingsModal = document.getElementById("settingsModal");
+    const settingsModalContent = document.querySelector(".settings-modal-content");
+    const customTitle = document.getElementById("customTitle");
+    const logoSelect = document.getElementById("logoSelect");
+    const customLogo = document.getElementById("customLogo");
+    const settingsSave = document.getElementById("settingsSave");
+    const settingsCancel = document.getElementById("settingsCancel");
+    const siteTitle = document.getElementById("siteTitle");
+    const siteTitleDisplay = document.getElementById("siteTitleDisplay");
+    const siteLogo = document.getElementById("siteLogo");
 
     let percent = 0;
     const updateLoading = () => {
@@ -181,13 +255,13 @@ const tips = [
     };
     const loadingInterval = setInterval(updateLoading, 60);
 
-    const createGameButton = ({ name, file, img }) => {
+    const createGameButton = ({ name, file, img, description }) => {
       const div = document.createElement("div");
       div.className = "flex flex-col items-center";
       div.innerHTML = `
-        <button class="gameButton w-56 h-56 rounded-3xl overflow-hidden shadow-lg bg-gray-900 relative" data-file="${file}" aria-label="Play ${name}">
+        <button class="gameButton w-56 h-56 rounded-3xl overflow-hidden shadow-lg bg-gray-900 relative" data-file="${file}" aria-label="Play ${name}, ${description}">
           <img src="${img}" alt="${name}" class="w-full h-full object-cover rounded-3xl lazy" loading="lazy" onerror="this.src='data:image/gif;base64,R0lGODlhAQABAIAAAMLCwgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=='">
-          <div class="hover-text">${name}</div>
+          <div class="hover-text">${description}</div>
         </button>
         <div class="label text-lg font-semibold mt-4">${name}</div>
       `;
@@ -219,6 +293,19 @@ const tips = [
     const openClever = () => {
       window.open("https://clever.com", "_blank");
     };
+
+    const loadSettings = () => {
+      const savedTitle = localStorage.getItem("siteTitle");
+      const savedLogo = localStorage.getItem("siteLogo");
+      if (savedTitle) {
+        siteTitle.textContent = savedTitle;
+        siteTitleDisplay.textContent = savedTitle;
+      }
+      if (savedLogo) {
+        siteLogo.src = savedLogo;
+      }
+    };
+    loadSettings();
 
     buttonContainer.addEventListener("click", (e) => {
       const btn = e.target.closest(".gameButton");
@@ -253,7 +340,35 @@ const tips = [
       themeToggle.textContent = document.body.classList.contains("light-theme") ? "🌙" : "☀️";
     });
 
-    document.querySelectorAll(".gameButton, #emergency, #themeToggle, #modalConfirm, #modalCancel, #alwaysYes").forEach(btn => {
+    settingsBtn.addEventListener("click", () => {
+      customTitle.value = siteTitle.textContent;
+      customLogo.value = "";
+      settingsModal.classList.remove("hidden");
+      setTimeout(() => settingsModalContent.classList.add("active"), 10);
+    });
+
+    settingsSave.addEventListener("click", () => {
+      const newTitle = customTitle.value.trim();
+      const newLogo = customLogo.value.trim() || logoSelect.value;
+      if (newTitle) {
+        siteTitle.textContent = newTitle;
+        siteTitleDisplay.textContent = newTitle;
+        localStorage.setItem("siteTitle", newTitle);
+      }
+      if (newLogo) {
+        siteLogo.src = newLogo;
+        localStorage.setItem("siteLogo", newLogo);
+      }
+      settingsModalContent.classList.remove("active");
+      setTimeout(() => settingsModal.classList.add("hidden"), 400);
+    });
+
+    settingsCancel.addEventListener("click", () => {
+      settingsModalContent.classList.remove("active");
+      setTimeout(() => settingsModal.classList.add("hidden"), 400);
+    });
+
+    document.querySelectorAll(".gameButton, #emergency, #themeToggle, #settingsBtn, #modalConfirm, #modalCancel, #alwaysYes, #settingsSave, #settingsCancel").forEach(btn => {
       btn.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
